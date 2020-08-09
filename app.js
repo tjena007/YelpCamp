@@ -2,6 +2,14 @@ var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
+var seedDB = require("./seeds");
+var Comment = require("./models/comment");
+
+seedDB();
+app.use(express.static(__dirname + "/public"));
+
+//schema setup
+var Campground = require("./models/campground");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -12,31 +20,27 @@ mongoose.connect('mongodb://localhost:27017/yelp_camp', {
   .then(() => console.log('Connected to DB!'))
   .catch(error => console.log(error.message));
 
+// Campground.create(
+//   {
+//     name: "Camp Exotica, Kullu",
+//     image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+//     description: "lorem  "
+//   },
+//   function (err, campground) {
+//     if (err) {
+//       console.log(err);
+//     }
+//     else {
+//       console.log(campground)
+//     }
+//   }
+// )
 
-//schema setup
-var campgroundSchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  description: String
-});
-
-var Campground = mongoose.model("Campground", campgroundSchema);
-
-Campground.create(
-  {
-    name: "Camp Exotica, Kullu",
-    image: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-    description: "lorem  "
-  },
-  function (err, campground) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      console.log(campground)
-    }
-  }
-)
+// Campground.deleteMany({ name: "Camp Exotica, Kullu" }, function (err) {
+//   if (err) return handleError(err);
+//   // deleted at most one tank document
+//   console.log("deleted")
+// });
 
 //app.get set and post
 app.get("/", function (req, res) {
@@ -55,7 +59,7 @@ app.get("/campGrounds", function (req, res) {
       console.log(err);
     }
     else {
-      res.render("index.ejs", { camps: allcampGrounds });
+      res.render("campgrounds/index.ejs", { camps: allcampGrounds });
     }
   })
 });
@@ -81,26 +85,70 @@ app.post("/campGrounds", function (req, res) {
 
 //new rouute
 app.get("/campGrounds/new", function (req, res) {
-  res.render("new.ejs");
+  res.render("campgrounds/new.ejs");
 });
 
 //show route -- shouold be declared at the end
 app.get("/campGrounds/:id", function (req, res) {
 
-  Campground.findById(req.params.id, function (err, foundCampground) {
+  Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) {
     if (err) {
       console.log(err)
     }
     else {
-      res.render("show.ejs", { camp: foundCampground });
+      res.render("campgrounds/show.ejs", { camp: foundCampground });
     }
   })
 })
 
+//================================================
+//Comment ROUTES
+//show
+app.get("/campGrounds/:id/comments/new", function (req, res) {
+  Campground.findById(req.params.id, function (err, campground) {
+    if (err) {
+      console.log(err)
+    }
+    else {
+      res.render("comments/new.ejs", { camp: campground });
+    }
+  })
+})
+
+app.post("/campGrounds/:id/comments", function (req, res) {
+  //look for campground using ID
+  Campground.findById(req.params.id, function (err, camp) {
+    if (err) {
+      console.log(err);
+      res.redirect("/campgrounds");
+    }
+    else {
+      //create comment
+      Comment.create(req.body.comment,
+        function (err, comment) {
+          if (err) {
+            console.log(err)
+          }
+          else {
+            //connect comment to campground
+            camp.comments.push(comment);
+            camp.save();
+            //redirect to that campground show page
+            res.redirect("/campgrounds/" + camp._id);
+            // console.log("redirected");
+          }
+        })
+    }
+  });
+});
+
+//================================================
+
 app.get("*", function (req, res) {
   //res.render("https://wallpapercave.com/wp/wp2414722.jpg");
   //   res.send("Sorry,page not found.");
-  res.redirect("https://wallpapercave.com/wp/wp2414734.png");
+  //res.redirect("https://wallpapercave.com/wp/wp2414734.png");
+  res.redirect("/")
 });
 
 app.listen("3000", function () {

@@ -1,45 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+  <title>
+    How to hide a div when the user
+    clicks outside of it using jQuery?
+  </title>
+
+  <style>
+    .container {
+      height: 200px;
+      width: 200px;
+      background-color: green;
+      border: 5px solid black;
+    }
+  </style>
+
+  <script src="https://code.jquery.com/jquery-3.4.0.min.js">
+  </script>
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <h1 style="color: green">
+    GeeksForGeeks
+  </h1>
 
-  <form>
-    <div class="form-group text-center">
-      <label for="exampleInputEmail1">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
-        placeholder="Enter email" />
-      <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-    </div>
-    <div class="form-group">
-      <label for="exampleInputPassword1">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
-    </div>
-    <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1" />
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
+  <b>
+    How to hide a div when the user clicks
+    outside of it using jQuery?
+  </b>
+
+  <p>Click outside the green div to hide it</p>
+
+  <div class="container" id="hell" style="color:green" onmouseup="close(e,this.id)"></div>
+
+  <script type="text/javascript">
+    $(document).mouseup(function (e) {
+      if ($(e.target).closest(".container").length
+        === 0) {
+        $(".container").hide();
+      }
+    }); 
+  </script>
 </body>
 
 </html>
