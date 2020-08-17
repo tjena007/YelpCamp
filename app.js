@@ -12,7 +12,8 @@ var commentRoutes = require("./routes/comments"),
   campgroundRoutes = require("./routes/campgrounds"),
   authRoutes = require("./routes/index");
 
-seedDB();
+//seedDb
+//seedDB();
 app.use(express.static(__dirname + "/public"));
 
 //schema setup

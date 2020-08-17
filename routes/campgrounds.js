@@ -19,11 +19,15 @@ router.get("/campGrounds", function (req, res) {
 });
 
 //create route
-router.post("/campGrounds", function (req, res) {
+router.post("/campGrounds", isLoggedIn, function (req, res) {
     var name = req.body.name;
     var image = req.body.image;
     var description = req.body.description;
-    var newCampground = { name: name, image: image, description: description };
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    };
+    var newCampground = { name: name, image: image, description: description, author: author };
     // campGrounds.push(newCampground);
 
     //create campground and save to db

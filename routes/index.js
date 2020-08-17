@@ -21,7 +21,8 @@ router.post("/signup", function (req, res) {
             // alert("please signup");
             res.render("signup.ejs")
         }
-        passport.authenticate("local")(req, res, function () {
+        //return url as well
+        passport.authenticate("local",)(req, res, function () {
             res.redirect('/campgrounds')
         })
     })

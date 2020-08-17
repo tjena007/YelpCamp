@@ -32,7 +32,11 @@ router.post("/campGrounds/:id/comments", isLoggedIn, function (req, res) {
                         console.log(err)
                     }
                     else {
+                        //add Username and id to comment
+                        comment.author.id = req.user._id;
+                        comment.author.username = req.user.username;
                         //connect comment to campground
+                        comment.save();
                         camp.comments.push(comment);
                         camp.save();
                         //redirect to that campground show page
