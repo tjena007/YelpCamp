@@ -8,6 +8,10 @@ var User = require("./models/user");
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
 
+var commentRoutes = require("./routes/comments"),
+  campgroundRoutes = require("./routes/campgrounds"),
+  authRoutes = require("./routes/index");
+
 seedDB();
 app.use(express.static(__dirname + "/public"));
 
@@ -35,6 +39,14 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+app.use(function (req, res, next) {
+  res.locals.currentUser = req.user;
+  next();
+})
+app.use(authRoutes);
+app.use(commentRoutes);
+app.use(campgroundRoutes);
+
 // Campground.create(
 //   {
 //     name: "Camp Exotica, Kullu",
@@ -58,124 +70,6 @@ passport.deserializeUser(User.deserializeUser());
 // });
 
 //app.get set and post
-app.get("/", function (req, res) {
-  res.render("landing.ejs");
-});
-
-
-//index route
-app.get("/campGrounds", function (req, res) {
-  //using array
-  // res.render("campground.ejs", { camps: campGrounds });
-
-  //using database
-  Campground.find({}, function (err, allcampGrounds) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      res.render("campgrounds/index.ejs", { camps: allcampGrounds });
-    }
-  })
-});
-
-//create route
-app.post("/campGrounds", function (req, res) {
-  var name = req.body.name;
-  var image = req.body.image;
-  var description = req.body.description;
-  var newCampground = { name: name, image: image, description: description };
-  // campGrounds.push(newCampground);
-
-  //create campground and save to db
-  Campground.create(newCampground, function (err, newcreated) {
-    if (err) {
-      console.log(err);
-    }
-    else {
-      res.redirect("/campGrounds");
-    }
-  });
-});
-
-//new rouute
-app.get("/campGrounds/new", function (req, res) {
-  res.render("campgrounds/new.ejs");
-});
-
-//show route -- shouold be declared at the end
-app.get("/campGrounds/:id", function (req, res) {
-
-  Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) {
-    if (err) {
-      console.log(err)
-    }
-    else {
-      res.render("campgrounds/show.ejs", { camp: foundCampground });
-    }
-  })
-})
-
-//================================================
-//Comment ROUTES
-//show
-app.get("/campGrounds/:id/comments/new", function (req, res) {
-  Campground.findById(req.params.id, function (err, campground) {
-    if (err) {
-      console.log(err)
-    }
-    else {
-      res.render("comments/new.ejs", { camp: campground });
-    }
-  })
-})
-
-app.post("/campGrounds/:id/comments", function (req, res) {
-  //look for campground using ID
-  Campground.findById(req.params.id, function (err, camp) {
-    if (err) {
-      console.log(err);
-      res.redirect("/campgrounds");
-    }
-    else {
-      //create comment
-      Comment.create(req.body.comment,
-        function (err, comment) {
-          if (err) {
-            console.log(err)
-          }
-          else {
-            //connect comment to campground
-            camp.comments.push(comment);
-            camp.save();
-            //redirect to that campground show page
-            res.redirect("/campgrounds/" + camp._id);
-            // console.log("redirected");
-          }
-        })
-    }
-  });
-});
-
-//=================auth routes
-app.get("/signup", function (req, res) {
-  res.render("signup.ejs")
-})
-
-app.post("/signup", function (req, res) {
-  var newUser = new User({ username: req.body.username })
-  User.register(newUser, req.body.password, function (err, user) {
-    if (err) {
-      console.log(err);
-      // alert("please signup");
-      res.render("signup.ejs")
-    }
-    passport.authenticate("local")(req, res, function () {
-      res.redirect('/campgrounds')
-    })
-  })
-})
-//================================================
 
 app.get("*", function (req, res) {
   //res.render("https://wallpapercave.com/wp/wp2414722.jpg");

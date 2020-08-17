@@ -7,10 +7,12 @@
         <div style="width: 30%; margin: 25px auto;">
             <form action="/campGrounds/<%= camp._id%>/comments" method="post">
                 <div class="form-group">
-                    <input type="text" class="form-control" name="comment[text]" placeholder="tell us what you think" />
+                    <input type="text" class="form-control" name="comment[text]" placeholder="tell us what you think"
+                        required />
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" name="comment[author]" placeholder="author" />
+                    <input type="text" class="form-control font-weight-bold" name="comment[author]" placeholder="author"
+                        required value="<%=currentUser.username.toUpperCase()%>" />
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary btn-block">Submit!</button>
