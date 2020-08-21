@@ -47,6 +47,42 @@ router.post("/campGrounds/:id/comments", isLoggedIn, function (req, res) {
         }
     });
 });
+//edit route
+router.get("/campGrounds/:id/comments/:comment_id/edit", checkCommentAuthentication, function (req, res) {
+    Comment.findById(req.params.comment_id, function (err, foundComment) {
+        if (err) {
+            res.redirect("/campGrounds/:id");
+        }
+        else {
+            res.render("comments/edit.ejs", { comment: foundComment, campid: req.params.id });
+        }
+
+    });
+})
+router.put("/campGrounds/:id/comments/:comment_id", checkCommentAuthentication, function (req, res) {
+    Comment.findByIdAndUpdate(req.params.comment_id, req.body.comment, function (err, updatedComment) {
+        if (err) {
+            res.redirect("/campgrounds");
+        }
+        else {
+            res.redirect("/campGrounds/" + req.params.id);
+        }
+    })
+})
+
+//delete comment route
+router.delete("/campGrounds/:id/comments/:comment_id", checkCommentAuthentication, function (req, res) {
+    //res.send("delete route");
+    Comment.findByIdAndDelete(req.params.comment_id, function (err) {
+        if (err) {
+            console.log(err);
+            res.redirect("/campGrounds/" + req.params.id);
+        }
+        else {
+            res.redirect("/campGrounds/" + req.params.id);
+        }
+    })
+})
 
 function isLoggedIn(req, res, next) {
     // req.session.returnTo = req.originalUrl;
@@ -56,6 +92,28 @@ function isLoggedIn(req, res, next) {
     }
     req.session.returnTo = req.url;
     res.redirect("/login");
+}
+
+function checkCommentAuthentication(req, res, next) {
+    if (req.isAuthenticated()) {
+        Comment.findById(req.params.comment_id, function (err, foundComment) {
+            if (err) {
+                res.redirect("back");
+            }
+            else {
+                //does user own campground?
+                if (foundComment.author.id.equals(req.user._id)) {
+                    next();
+                }
+                else {
+                    res.redirect("back");
+                }
+            }
+        })
+    }
+    else {
+        res.redirect("/login");
+    }
 }
 
 //==========================================================

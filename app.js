@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var seedDB = require("./seeds");
+var methodOverride = require("method-override");
 var Comment = require("./models/comment");
 var User = require("./models/user");
 var passport = require("passport");
@@ -15,6 +16,7 @@ var commentRoutes = require("./routes/comments"),
 //seedDb
 //seedDB();
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"));
 
 //schema setup
 var Campground = require("./models/campground");
@@ -27,6 +29,8 @@ mongoose.connect('mongodb://localhost:27017/yelp_camp', {
 })
   .then(() => console.log('Connected to DB!'))
   .catch(error => console.log(error.message));
+
+mongoose.set('useFindAndModify', false);
 
 //PASPORT CONFIG
 app.use(require("express-session")({
