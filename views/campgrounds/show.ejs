@@ -20,7 +20,7 @@
                             <div class="col-md-10">
                                 <h2><a href="#"><%= camp.name %></a></h2>
                             </div>
-                            <div class="d-flex flex-row-reverse col-md-2">$9.00/night</div>
+                            <div class="d-flex flex-row-reverse col-md-2">$<%= camp.price %>/night</div>
                             <div class="col-md-6">
                                 <em> Submitted by - <span><%= camp.author.username %></span></em>
                             </div>
@@ -29,8 +29,7 @@
                                 <a class="btn btn-sm btn-outline-warning float-md-right mr-md-3"
                                     href="/campGrounds/<%=camp._id%>/edit">Edit
                                 </a>
-                                <form action="/campGrounds/<%=camp._id%>?_method=DELETE" class="d-inline-block"
-                                    method="post">
+                                <form action="/campGrounds/<%=camp._id%>?_method=DELETE" class="" method="post">
                                     <button class="btn btn-sm btn-outline-danger float-md-right" type="submit">Delete
                                     </button>
                                 </form>

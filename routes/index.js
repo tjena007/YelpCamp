@@ -2,6 +2,7 @@ var express = require("express");
 var router = express.Router();
 var passport = require("passport");
 var User = require("../models/user");
+var middleware = require("../middleware")
 
 router.get("/", function (req, res) {
     res.render("landing.ejs");
@@ -17,39 +18,33 @@ router.post("/signup", function (req, res) {
     var newUser = new User({ username: req.body.username })
     User.register(newUser, req.body.password, function (err, user) {
         if (err) {
-            console.log(err);
+            req.flash("error", err.message); //notworking!
+            // console.log(err.message);
             // alert("please signup");
             res.render("signup.ejs")
         }
         //return url as well
         passport.authenticate("local",)(req, res, function () {
+            req.flash("success", "Account created successfully!");
             res.redirect('/campgrounds')
         })
     })
 })
 //login routes
 router.get("/login", function (req, res) {
+    //console.log(req.flash("error"))
     res.render("login.ejs")
 })
 router.post("/login", passport.authenticate("local", { successReturnToOrRedirect: '/campgrounds', failureRedirect: '/login' }), function (req, res) {
-})
+});
 
 //logout routes
 router.get('/logout', function (req, res) {
     req.logout();
+    req.flash("success", "Logged you out");
     res.redirect('/')
 })
 
-
-function isLoggedIn(req, res, next) {
-    // req.session.returnTo = req.originalUrl;
-    // console.log(req.session.returnTo)
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    req.session.returnTo = req.url;
-    res.redirect("/login");
-}
 //================================================
 
 module.exports = router
