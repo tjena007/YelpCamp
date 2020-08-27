@@ -24,7 +24,9 @@ var Campground = require("./models/campground");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect('mongodb://localhost:27017/yelp_camp', {
+// mongodb+srv://tjena007:<password>@cluster0.5qfek.mongodb.net/<dbname>?retryWrites=true&w=majority
+//mongodb://localhost:27017/yelp_camp
+mongoose.connect('mongodb+srv://tjena007:Som@1234@cluster0.5qfek.mongodb.net/<dbname>?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
