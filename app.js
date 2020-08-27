@@ -26,7 +26,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // mongodb+srv://tjena007:<password>@cluster0.5qfek.mongodb.net/<dbname>?retryWrites=true&w=majority
 //mongodb://localhost:27017/yelp_camp
-mongoose.connect('mongodb+srv://tjena007:Som@1234@cluster0.5qfek.mongodb.net/<dbname>?retryWrites=true&w=majority', {
+var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp";
+console.log(url);
+// mongoose.connect(url);
+mongoose.connect(url, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
