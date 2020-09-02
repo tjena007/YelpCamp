@@ -6,3 +6,8 @@
 #description{
     padding: 0.6rem;;
 }
+/* Google Maps */
+#map {
+    height: 400px;
+    width: 100%;
+}

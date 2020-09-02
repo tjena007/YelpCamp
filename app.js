@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require("express");
 var app = express();
 var bodyParser = require("body-parser");
@@ -16,6 +17,7 @@ var commentRoutes = require("./routes/comments"),
 
 //seedDb
 //seedDB();
+
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride("_method"));
 
@@ -27,7 +29,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // mongodb+srv://tjena007:<password>@cluster0.5qfek.mongodb.net/<dbname>?retryWrites=true&w=majority
 //mongodb://localhost:27017/yelp_camp
 var url = process.env.DATABASEURL || "mongodb://localhost:27017/yelp_camp";
-console.log(url);
+// console.log(url);
 // mongoose.connect(url);
 mongoose.connect(url, {
   useNewUrlParser: true,
