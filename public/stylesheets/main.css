@@ -1,13 +1,24 @@
-.img-thumbnail{
-    width: 100%;
-    padding: 0;
+.img-thumbnail {
+	width: 100%;
+	padding: 0;
 }
 
-#description{
-    padding: 0.6rem;;
+#description {
+	padding: 0.6rem;
 }
 /* Google Maps */
 #map {
-    height: 400px;
-    width: 100%;
+	height: 400px;
+	width: 100%;
+}
+.width {
+	width: 30%;
+}
+@media screen and (max-width: 600px) {
+	.width {
+		width: 60%;
+	}
+}
+.nav-item a {
+	float: right;
 }
